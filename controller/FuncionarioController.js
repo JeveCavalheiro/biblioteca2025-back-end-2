@@ -39,5 +39,31 @@ async function alterar (req, res) {
     res.json(respostaBanco);
 }
 
+async function demitir(req, res) {
+    const idfuncionario = req.body.idfuncionario;
+    const demissao = req.body.demissao;
 
-export default {listar, selecionar, inserir, alterar};
+    
+    //verifica se existe o funcionário
+    const funcionario = await Funcionario.findByPk(idfuncionario);
+    if (!funcionario) {
+        return res.status(404).send('Funcionário não encontrado.');
+    }
+
+    //verifica se o funcionário já não foi demitido
+    if (!funcionario.ativo) {
+        return res.status(422).send('Este funcionário já foi demitido.');
+    }
+
+
+    //atualiza o registro de funcionário, marcando a demissão e adicionando a observação
+    await Funcionario.update(
+        { demissao, ativo: false},
+        { where: { idfuncionario } }
+    );
+    
+    return res.status(200).send('Demissão realizada.');
+}
+
+
+export default {listar, selecionar, inserir, alterar, demitir};
