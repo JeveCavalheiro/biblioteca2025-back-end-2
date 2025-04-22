@@ -91,7 +91,7 @@ async function devolver(req, res) {
         return res.status(422).send('Este empréstimo já foi devolvido.');
     }
 
-    //obtém a data atual e formata no formato YYYY-MM-DD
+    
     const data_devolucao = moment().format('YYYY-MM-DD');
 
     //atualiza o registro de empréstimo, marcando a devolução e adicionando a observação
