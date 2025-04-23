@@ -44,7 +44,7 @@ async function demitir(req, res) {
     const demissao = req.body.demissao;
 
     
-    //verifica se existe o funcionário
+    //verifica se existe o id do funcionário existe
     const funcionario = await Funcionario.findByPk(idfuncionario);
     if (!funcionario) {
         return res.status(404).send('Funcionário não encontrado.');
@@ -56,7 +56,7 @@ async function demitir(req, res) {
     }
 
 
-    //atualiza o registro de funcionário, marcando a demissão e adicionando a observação
+    //atualiza o registro de funcionário, marcando a demissão e o desativando
     await Funcionario.update(
         { demissao, ativo: false},
         { where: { idfuncionario } }
@@ -65,5 +65,36 @@ async function demitir(req, res) {
     return res.status(200).send('Demissão realizada.');
 }
 
+//função de senha
+async function funcionariosenha(req, res) {
+    const idfuncionario = req.body.idfuncionario;
+    const senha = req.body.senha;
 
-export default {listar, selecionar, inserir, alterar, demitir};
+    //verifica se existe o id do funcionário existe
+    const funcionario = await Funcionario.findByPk(idfuncionario);
+    if (!funcionario) {
+        return res.status(404).send('Funcionário não encontrado.');
+    }
+    
+    if (senha.length > 20) {
+        return res.status(400).send('A senha tem mais de 20 digitos');
+    }
+    
+    if (senha.length < 6) {
+        return res.status(400).send('A senha tem menos de 6 dígitos');
+    }
+
+
+    const token = null;
+
+
+    await Funcionario.update(
+        { senha, token},
+        { where: { idfuncionario } }
+    );
+
+    return res.status(200).send('Senha criada.');
+
+}
+
+export default {listar, selecionar, inserir, alterar, demitir, funcionariosenha};
